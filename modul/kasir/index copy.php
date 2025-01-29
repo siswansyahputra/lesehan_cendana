@@ -71,13 +71,10 @@
                 <hr>
                 <div class="mb-3">
                     <label for="item" class="form-label">Item</label>
-                    <input type="text" id="item" class="form-control" name="item" required list="item-list" autocomplete="off" oninput="pilihItem()">
-                    <datalist id="item-list">
-                        <!-- Data menu akan dimuat di sini -->
-                    </datalist>
+                    <select name="item" id="item" class="form-select" required onclick="fetchMenu()" onchange="pilihItem()">
+                        <option value="">-- Pilih Item --</option>
+                    </select>
                 </div>
-
-
                 <div class="mb-3">
                     <label for="harga" class="form-label">Harga</label>
                     <input type="text" class="form-control" id="harga" name="harga" readonly>
@@ -104,7 +101,6 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        fetchMenu();
         updateTable();
         totalPesanan();
         // jika ada data pesanan di local storage
@@ -117,54 +113,20 @@
         fetch('modul/menu/api.php')
             .then(response => response.json())
             .then(data => {
-                const itemInput = document.getElementById('item');
-                const itemList = document.getElementById('item-list');
-                itemList.innerHTML = ''; // Reset list
-
-                // Simpan data menu dalam bentuk global
-                window.menuData = data.data;
-
+                console.log(data);
+                const item = document.getElementById('item');
                 data.data.forEach(menu => {
                     const option = document.createElement('option');
-                    option.value = menu.kategori + ' - ' + menu.nama_menu; // Nama menu untuk pencarian
+                    option.value = menu.id;
                     option.setAttribute('data-id', menu.id);
                     option.setAttribute('data-harga', menu.harga);
                     option.setAttribute('data-diskon', menu.diskon);
-                    itemList.appendChild(option);
+                    option.textContent = menu.kategori + ' - ' + menu.nama_menu;
+                    item.appendChild(option);
                 });
             })
             .catch(error => console.error('Error fetching menu:', error));
     }
-
-    function pilihItem() {
-        const itemInput = document.getElementById('item');
-        const itemList = document.getElementById('item-list');
-        const hargaInput = document.getElementById('harga');
-        const diskonInput = document.getElementById('diskon');
-        const jumlahInput = document.getElementById('jumlah');
-        const totalInput = document.getElementById('total');
-        const buttonTambah = document.getElementById('tambah');
-
-        // Mencari item yang dipilih berdasarkan teks input
-        const selectedItemText = itemInput.value;
-        const selectedMenu = window.menuData.find(menu => (menu.kategori + ' - ' + menu.nama_menu) === selectedItemText);
-
-        if (selectedMenu) {
-            hargaInput.value = selectedMenu.harga;
-            diskonInput.value = selectedMenu.diskon;
-            jumlahInput.value = 1;
-            totalInput.value = (selectedMenu.harga - selectedMenu.diskon);
-            buttonTambah.disabled = false;
-        } else {
-            // Jika tidak ada item yang cocok, reset form
-            hargaInput.value = '';
-            diskonInput.value = '';
-            jumlahInput.value = '';
-            totalInput.value = '';
-            buttonTambah.disabled = true;
-        }
-    }
-
 
     function resetItem() {
         const item = document.getElementById('item');
@@ -181,6 +143,20 @@
         buttonTambah.disabled = true;
     }
 
+    function pilihItem() {
+        const item = document.getElementById('item');
+        const data_harga = item.options[item.selectedIndex].getAttribute('data-harga');
+        const data_diskon = item.options[item.selectedIndex].getAttribute('data-diskon');
+        const hargaInput = document.getElementById('harga').value = data_harga;
+        const diskonInput = document.getElementById('diskon').value = data_diskon;
+        const jumlahInput = document.getElementById('jumlah');
+        const totalInput = document.getElementById('total');
+        const buttonTambah = document.getElementById('tambah');
+        jumlahInput.value = 1;
+        jumlahInput.auofocus = true;
+        totalInput.value = data_harga - data_diskon;
+        buttonTambah.disabled = false;
+    }
 
     function hitungTotal() {
         const harga = document.getElementById('harga').value;
@@ -191,101 +167,33 @@
     }
 
     function tambahPesanan() {
-        const itemInput = document.getElementById('item');
-        const hargaInput = document.getElementById('harga');
-        const diskonInput = document.getElementById('diskon');
-        const jumlahInput = document.getElementById('jumlah');
-        const totalInput = document.getElementById('total');
-
-        const selectedItemText = itemInput.value;
-        const harga = parseFloat(hargaInput.value);
-        const diskon = parseFloat(diskonInput.value);
-        const jumlah = parseInt(jumlahInput.value);
-        const total = parseFloat(totalInput.value);
-
-        // Mencari data menu yang sesuai
-        const selectedMenu = window.menuData.find(menu => (menu.kategori + ' - ' + menu.nama_menu) === selectedItemText);
-
-        if (!selectedMenu) {
-            alert("Item tidak ditemukan!");
-            return;
-        }
-
-        // Membuat objek pesanan baru
-        const pesananBaru = {
-            id: selectedMenu.id,
-            item: selectedMenu.nama_menu,
-            kategori: selectedMenu.kategori,
-            harga: harga,
-            diskon: diskon,
-            jumlah: jumlah,
-            total: total
-        };
-
-        // Ambil data pesanan yang sudah ada di localStorage
-        let pesananList = JSON.parse(localStorage.getItem('pesanan')) || [];
-
-        // Cek apakah menu yang sama sudah ada dalam pesanan
-        const index = pesananList.findIndex(pesanan => pesanan.id === pesananBaru.id);
-
+        const item = document.getElementById('item');
+        const id = item.options[item.selectedIndex].getAttribute('data-id');
+        const harga = item.options[item.selectedIndex].getAttribute('data-harga');
+        const diskon = item.options[item.selectedIndex].getAttribute('data-diskon');
+        const jumlah = document.getElementById('jumlah').value;
+        const total = (harga - diskon) * jumlah;
+        const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];
+        const index = pesanan.findIndex(p => p.id === id);
         if (index !== -1) {
-            // Jika pesanan sudah ada, tambahkan jumlah dan hitung ulang total
-            pesananList[index].jumlah += pesananBaru.jumlah;
-            pesananList[index].total = pesananList[index].jumlah * (pesananList[index].harga - pesananList[index].diskon);
+            pesanan[index].jumlah += parseInt(jumlah);
+            pesanan[index].total += parseInt(total);
         } else {
-            // Jika pesanan belum ada, tambahkan pesanan baru
-            pesananList.push(pesananBaru);
+            pesanan.push({
+                id: id,
+                item: item.options[item.selectedIndex].text,
+                harga: harga,
+                diskon: diskon,
+                jumlah: parseInt(jumlah),
+                total: parseInt(total)
+            });
         }
-
-        // Simpan kembali ke localStorage
-        localStorage.setItem('pesanan', JSON.stringify(pesananList));
-
-        // Reset form setelah menambah pesanan
-        resetItem();
-
-        // Memastikan bahwa tombol pilih meja aktif dan memperbarui tampilan
+        localStorage.setItem('pesanan', JSON.stringify(pesanan));
         document.getElementById('pilih_meja').disabled = false;
-
-        // Update tampilan daftar pesanan dan total
         updateTable();
         totalPesanan();
-
-        // Mengosongkan form untuk input berikutnya jika perlu
         resetForm();
-
-        alert('Pesanan berhasil ditambahkan!');
     }
-
-
-
-    // function tambahPesanan() {
-    //     const item = document.getElementById('item-list');
-    //     const id = item.options[item.selectedIndex].getAttribute('data-id');
-    //     const harga = item.options[item.selectedIndex].getAttribute('data-harga');
-    //     const diskon = item.options[item.selectedIndex].getAttribute('data-diskon');
-    //     const jumlah = document.getElementById('jumlah').value;
-    //     const total = (harga - diskon) * jumlah;
-    //     const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];
-    //     const index = pesanan.findIndex(p => p.id === id);
-    //     if (index !== -1) {
-    //         pesanan[index].jumlah += parseInt(jumlah);
-    //         pesanan[index].total += parseInt(total);
-    //     } else {
-    //         pesanan.push({
-    //             id: id,
-    //             item: item.options[item.selectedIndex].text,
-    //             harga: harga,
-    //             diskon: diskon,
-    //             jumlah: parseInt(jumlah),
-    //             total: parseInt(total)
-    //         });
-    //     }
-    //     localStorage.setItem('pesanan', JSON.stringify(pesanan));
-    //     document.getElementById('pilih_meja').disabled = false;
-    //     updateTable();
-    //     totalPesanan();
-    //     resetForm();
-    // }
 
     function updateTable() {
         const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];

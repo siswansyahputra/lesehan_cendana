@@ -98,8 +98,22 @@ if (isset($_GET['id'])) {
                 <td>Total Pembayaran</td>
                 <td class="text-right">Rp. <?= number_format($penjualan['total_pembayaran'], 0); ?></td>
             </tr>
+            <tr>
+                <td>Tunai</td>
+                <td class="text-right">
+                    Rp. 
+                    <?php if ($penjualan['tunai'] == 0) echo "0"; else echo number_format($penjualan['tunai'], 0); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Kembalian</td>
+                <td class="text-right">Rp. 
+                    <?php if ($penjualan['kembalian'] == 0) echo "0"; else echo number_format($penjualan['kembalian'], 0); ?>
+                </td>
+            </tr>
         </table>
         <hr>
+        <p class="text-center">-- <?= $penjualan['status']; ?> --</p>
         <p class="text-center">Terima kasih atas kunjungan Anda!</p>
     </div>
 </body>

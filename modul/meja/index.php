@@ -119,25 +119,47 @@
                     <ul class="pagination justify-content-center">
                         <!-- Prev Button -->
                         <li class="page-item <?= $halaman <= 1 ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?module=meja&page=<?= $halaman - 1; ?>" aria-label="Previous">
+                            <a class="page-link" href="?module=meja&page=<?= max(1, $halaman - 1); ?>" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
 
                         <!-- Page Numbers -->
-                        <?php for ($i = 1; $i <= $total_halaman; $i++) : ?>
-                            <li class="page-item <?= $i == $halaman ? 'active' : ''; ?>"><a class="page-link" href="?module=meja&page=<?= $i; ?>"><?= $i; ?></a></li>
-                        <?php endfor; ?>
+                        <?php
+                        $start = max(1, $halaman - 2);
+                        $end = min($total_halaman, $halaman + 2);
+
+                        if ($start > 1) {
+                            echo '<li class="page-item"><a class="page-link" href="?module=meja&page=1">1</a></li>';
+                            if ($start > 2) {
+                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                            }
+                        }
+
+                        for ($i = $start; $i <= $end; $i++) :
+                        ?>
+                            <li class="page-item <?= $i == $halaman ? 'active' : ''; ?>">
+                                <a class="page-link" href="?module=meja&page=<?= $i; ?>"><?= $i; ?></a>
+                            </li>
+                        <?php endfor;
+
+                        if ($end < $total_halaman) {
+                            if ($end < $total_halaman - 1) {
+                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                            }
+                            echo '<li class="page-item"><a class="page-link" href="?module=meja&page=' . $total_halaman . '">' . $total_halaman . '</a></li>';
+                        }
+                        ?>
 
                         <!-- Next Button -->
                         <li class="page-item <?= $halaman >= $total_halaman ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?module=meja&page=<?= $halaman + 1; ?>" aria-label="Next">
+                            <a class="page-link" href="?module=meja&page=<?= min($total_halaman, $halaman + 1); ?>" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                     </ul>
                 </nav>
-
+                
             </div>
         </div>
     </div>

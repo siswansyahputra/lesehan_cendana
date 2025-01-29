@@ -205,11 +205,31 @@ $query_menu = mysqli_query($koneksi, $sql_menu);
                             </li>
                         <?php endif; ?>
 
-                        <?php for ($i = 1; $i <= $total_halaman; $i++) : ?>
-                            <li class="page-item <?= $i == $halaman ? 'active' : ''; ?>">
-                                <a class="page-link" href="?module=menu&halaman=<?= $i; ?>"><?= $i; ?></a>
-                            </li>
-                        <?php endfor; ?>
+                        <?php
+                        $jumlah_tombol = 5; // Jumlah tombol maksimal yang ditampilkan
+                        $start_page = max(1, $halaman - floor($jumlah_tombol / 2));
+                        $end_page = min($total_halaman, $start_page + $jumlah_tombol - 1);
+
+                        if ($start_page > 1) {
+                            echo '<li class="page-item"><a class="page-link" href="?module=menu&halaman=1">1</a></li>';
+                            if ($start_page > 2) {
+                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                            }
+                        }
+
+                        for ($i = $start_page; $i <= $end_page; $i++) {
+                            echo '<li class="page-item ' . ($i == $halaman ? 'active' : '') . '">
+                    <a class="page-link" href="?module=menu&halaman=' . $i . '">' . $i . '</a>
+                  </li>';
+                        }
+
+                        if ($end_page < $total_halaman) {
+                            if ($end_page < $total_halaman - 1) {
+                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                            }
+                            echo '<li class="page-item"><a class="page-link" href="?module=menu&halaman=' . $total_halaman . '">' . $total_halaman . '</a></li>';
+                        }
+                        ?>
 
                         <?php if ($halaman < $total_halaman) : ?>
                             <li class="page-item">
@@ -220,6 +240,7 @@ $query_menu = mysqli_query($koneksi, $sql_menu);
                         <?php endif; ?>
                     </ul>
                 </nav>
+
             </div>
         </div>
     </div>
