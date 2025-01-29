@@ -37,25 +37,6 @@
                         <label for="total_pembayaran" class="form-label">Total Pembayaran (Rp.)</label>
                         <input type="text" class="form-control bg-light" id="total_pembayaran" name="total_pembayaran" readonly>
                     </div>
-                    <div class="col">
-                        <label for="pilih_meja" class="form-label">Pilih Meja</label>
-                        <select name="pilih_meja" id="pilih_meja" class="form-select" onchange="pilihMeja()" disabled required>
-                            <option value="">-- Pilih Meja --</option>
-                            <?php
-                            $query = mysqli_query($koneksi, "SELECT * FROM meja");
-                            while ($data = mysqli_fetch_array($query)) {
-                            ?>
-                                <option
-                                    value="<?= $data['id']; ?>"
-                                    data-id="<?= $data['id']; ?>"
-                                    data-nama="<?= $data['nama_meja']; ?>">
-                                    <?= $data['nama_meja']; ?>
-                                </option>
-                            <?php
-                            }
-                            ?>
-                        </select>
-                    </div>
                     <div class="col align-self-end">
                         <button type="reset" class="btn btn-secondary w-100 mb-1" onclick="resetAll()">Reset</button>
                         <button type="submit" name="simpan" id="simpan" class="btn btn-primary w-100" onclick="simpanPesanan()">Simpan</button>
@@ -67,14 +48,27 @@
     <div class="col-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Atur Pesanan</h5>
+                <h5 class="card-title">Tambah Pesanan</h5>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span>Transaksi : </span>
+                        <span id="id_transaksi" class="fw-bold"><?= $_GET['transaksi']; ?></span>
+                    </div>
+                    <div>
+                        <span>No. Meja : </span>
+                        <span class="fw-bold"><?= $_GET['meja']; ?></span>
+                    </div>
+                </div>
                 <hr>
                 <div class="mb-3">
                     <label for="item" class="form-label">Item</label>
-                    <select name="item" id="item" class="form-select" required onclick="fetchMenu()" onchange="pilihItem()">
-                        <option value="">-- Pilih Item --</option>
-                    </select>
+                    <input type="text" id="item" class="form-control" name="item" required list="item-list" autocomplete="off" oninput="pilihItem()">
+                    <datalist id="item-list">
+                        <!-- Data menu akan dimuat di sini -->
+                    </datalist>
                 </div>
+
+
                 <div class="mb-3">
                     <label for="harga" class="form-label">Harga</label>
                     <input type="text" class="form-control" id="harga" name="harga" readonly>
@@ -101,32 +95,63 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        fetchMenu();
         updateTable();
         totalPesanan();
-        // jika ada data pesanan di local storage
-        if (localStorage.getItem('pesanan')) {
-            document.getElementById('pilih_meja').disabled = false;
-        }
     })
 
     function fetchMenu() {
         fetch('modul/menu/api.php')
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                const item = document.getElementById('item');
+                const itemInput = document.getElementById('item');
+                const itemList = document.getElementById('item-list');
+                itemList.innerHTML = ''; // Reset list
+
+                // Simpan data menu dalam bentuk global
+                window.menuData = data.data;
+
                 data.data.forEach(menu => {
                     const option = document.createElement('option');
-                    option.value = menu.id;
+                    option.value = menu.kategori + ' - ' + menu.nama_menu; // Nama menu untuk pencarian
                     option.setAttribute('data-id', menu.id);
                     option.setAttribute('data-harga', menu.harga);
                     option.setAttribute('data-diskon', menu.diskon);
-                    option.textContent = menu.kategori + ' - ' + menu.nama_menu;
-                    item.appendChild(option);
+                    itemList.appendChild(option);
                 });
             })
             .catch(error => console.error('Error fetching menu:', error));
     }
+
+    function pilihItem() {
+        const itemInput = document.getElementById('item');
+        const itemList = document.getElementById('item-list');
+        const hargaInput = document.getElementById('harga');
+        const diskonInput = document.getElementById('diskon');
+        const jumlahInput = document.getElementById('jumlah');
+        const totalInput = document.getElementById('total');
+        const buttonTambah = document.getElementById('tambah');
+
+        // Mencari item yang dipilih berdasarkan teks input
+        const selectedItemText = itemInput.value;
+        const selectedMenu = window.menuData.find(menu => (menu.kategori + ' - ' + menu.nama_menu) === selectedItemText);
+
+        if (selectedMenu) {
+            hargaInput.value = selectedMenu.harga;
+            diskonInput.value = selectedMenu.diskon;
+            jumlahInput.value = 1;
+            totalInput.value = (selectedMenu.harga - selectedMenu.diskon);
+            buttonTambah.disabled = false;
+        } else {
+            // Jika tidak ada item yang cocok, reset form
+            hargaInput.value = '';
+            diskonInput.value = '';
+            jumlahInput.value = '';
+            totalInput.value = '';
+            buttonTambah.disabled = true;
+        }
+    }
+
 
     function resetItem() {
         const item = document.getElementById('item');
@@ -143,20 +168,6 @@
         buttonTambah.disabled = true;
     }
 
-    function pilihItem() {
-        const item = document.getElementById('item');
-        const data_harga = item.options[item.selectedIndex].getAttribute('data-harga');
-        const data_diskon = item.options[item.selectedIndex].getAttribute('data-diskon');
-        const hargaInput = document.getElementById('harga').value = data_harga;
-        const diskonInput = document.getElementById('diskon').value = data_diskon;
-        const jumlahInput = document.getElementById('jumlah');
-        const totalInput = document.getElementById('total');
-        const buttonTambah = document.getElementById('tambah');
-        jumlahInput.value = 1;
-        jumlahInput.auofocus = true;
-        totalInput.value = data_harga - data_diskon;
-        buttonTambah.disabled = false;
-    }
 
     function hitungTotal() {
         const harga = document.getElementById('harga').value;
@@ -167,39 +178,74 @@
     }
 
     function tambahPesanan() {
-        const item = document.getElementById('item');
-        const id = item.options[item.selectedIndex].getAttribute('data-id');
-        const harga = item.options[item.selectedIndex].getAttribute('data-harga');
-        const diskon = item.options[item.selectedIndex].getAttribute('data-diskon');
-        const jumlah = document.getElementById('jumlah').value;
-        const total = (harga - diskon) * jumlah;
-        const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];
-        const index = pesanan.findIndex(p => p.id === id);
-        if (index !== -1) {
-            pesanan[index].jumlah += parseInt(jumlah);
-            pesanan[index].total += parseInt(total);
-        } else {
-            pesanan.push({
-                id: id,
-                item: item.options[item.selectedIndex].text,
-                harga: harga,
-                diskon: diskon,
-                jumlah: parseInt(jumlah),
-                total: parseInt(total)
-            });
+        const itemInput = document.getElementById('item');
+        const hargaInput = document.getElementById('harga');
+        const diskonInput = document.getElementById('diskon');
+        const jumlahInput = document.getElementById('jumlah');
+        const totalInput = document.getElementById('total');
+
+        const selectedItemText = itemInput.value;
+        const harga = parseFloat(hargaInput.value);
+        const diskon = parseFloat(diskonInput.value);
+        const jumlah = parseInt(jumlahInput.value);
+        const total = parseFloat(totalInput.value);
+
+        // Mencari data menu yang sesuai
+        const selectedMenu = window.menuData.find(menu => (menu.kategori + ' - ' + menu.nama_menu) === selectedItemText);
+
+        if (!selectedMenu) {
+            alert("Item tidak ditemukan!");
+            return;
         }
-        localStorage.setItem('pesanan', JSON.stringify(pesanan));
-        document.getElementById('pilih_meja').disabled = false;
+
+        // Membuat objek pesanan baru
+        const pesananBaru = {
+            id: selectedMenu.id,
+            item: selectedMenu.nama_menu,
+            kategori: selectedMenu.kategori,
+            harga: harga,
+            diskon: diskon,
+            jumlah: jumlah,
+            total: total
+        };
+
+        // Ambil data pesanan yang sudah ada di localStorage
+        let pesananList = JSON.parse(localStorage.getItem('tambahPesanan')) || [];
+
+        // Cek apakah menu yang sama sudah ada dalam pesanan
+        const index = pesananList.findIndex(pesanan => tambahPesanan.id === pesananBaru.id);
+
+        if (index !== -1) {
+            // Jika pesanan sudah ada, tambahkan jumlah dan hitung ulang total
+            pesananList[index].jumlah += pesananBaru.jumlah;
+            pesananList[index].total = pesananList[index].jumlah * (pesananList[index].harga - pesananList[index].diskon);
+        } else {
+            // Jika pesanan belum ada, tambahkan pesanan baru
+            pesananList.push(pesananBaru);
+        }
+
+        // Simpan kembali ke localStorage
+        localStorage.setItem('tambahPesanan', JSON.stringify(pesananList));
+
+        // Reset form setelah menambah pesanan
+        resetItem();
+
+
+        // Update tampilan daftar pesanan dan total
         updateTable();
         totalPesanan();
+
+        // Mengosongkan form untuk input berikutnya jika perlu
         resetForm();
+
+        alert('Pesanan berhasil ditambahkan!');
     }
 
     function updateTable() {
-        const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];
+        const tambahPesanan = JSON.parse(localStorage.getItem('tambahPesanan')) || [];
         const table = document.querySelector('tbody');
         table.innerHTML = '';
-        pesanan.forEach((item, index) => {
+        tambahPesanan.forEach((item, index) => {
             table.innerHTML += `
                 <tr>
                     <td>${index + 1}</td>
@@ -225,89 +271,72 @@
     }
 
     function hapusPesanan(index) {
-        const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];
-        pesanan.splice(index, 1);
-        localStorage.setItem('pesanan', JSON.stringify(pesanan));
+        const tambahPesanan = JSON.parse(localStorage.getItem('tambahPesanan')) || [];
+        tambahPesanan.splice(index, 1);
+        localStorage.setItem('tambahPesanan', JSON.stringify(tambahPesanan));
         updateTable();
         totalPesanan();
     }
 
     function totalPesanan() {
-        const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];
+        const tambahPesanan = JSON.parse(localStorage.getItem('tambahPesanan')) || [];
         let diskon = 0;
         let total = 0;
-        pesanan.forEach(item => {
+        tambahPesanan.forEach(item => {
             total += item.total;
             diskon += item.diskon * item.jumlah;
         });
         // simpan ke local storage
-        localStorage.setItem('diskon', diskon);
-        localStorage.setItem('total', total);
+        localStorage.setItem('tambahDiskon', diskon);
+        localStorage.setItem('tambahTotal', total);
         document.getElementById('total_diskon').value = diskon;
         document.getElementById('total_pembayaran').value = total;
-    }
-
-    function pilihMeja() {
-        const meja = document.getElementById('pilih_meja');
-        const id = meja.options[meja.selectedIndex].getAttribute('data-id');
-        const nama = meja.options[meja.selectedIndex].getAttribute('data-nama');
-        localStorage.setItem('id_meja', id);
-        localStorage.setItem('nama_meja', nama);
     }
 
     function resetAll() {
         localStorage.clear();
         updateTable();
-        document.getElementById('pilih_meja').value = '';
-        document.getElementById('pilih_meja').disabled = true;
     }
 
     function simpanPesanan() {
         // tampilkan pesan konfirmasi terlebih dahulu
-
-        $confirm = confirm("Apakah anda yakin ingin menyimpan pesanan?");
+        $confirm = confirm("Apakah anda yakin ingin menambah pesanan?");
         if ($confirm == false) {
             return false;
         } else {
-            const id_meja = localStorage.getItem('id_meja');
-            if (!id_meja) {
-                alert('Pilih meja terlebih dahulu');
-                return false;
-            } else {
-                const nama_meja = localStorage.getItem('nama_meja');
-                const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];
-                const total_diskon = localStorage.getItem('diskon');
-                const total_pembayaran = localStorage.getItem('total');
-                const data = {
-                    id_meja: id_meja,
-                    nama_meja: nama_meja,
-                    pesanan: pesanan,
-                    total_diskon: total_diskon,
-                    total_pembayaran: total_pembayaran
-                }
-                fetch('modul/kasir/aksi.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.status === 'success') {
-                            resetAll();
-                            updateTable();
-                            totalPesanan();
-                            alert(result.message);
-                        } else {
-                            alert(result.message);
-                        }
-                    })
-                    .catch(error => {
-                        alert('Error:', error);
-                        console.error('Error:', error);
-                    });
+            const id_penjualan = document.getElementById('id_transaksi').textContent;
+            const pesanan = JSON.parse(localStorage.getItem('tambahPesanan')) || [];
+            const total_diskon = localStorage.getItem('tambahDiskon');
+            const total_pembayaran = localStorage.getItem('tambahTotal');
+            const data = {
+                pesanan: pesanan,
+                total_diskon: total_diskon,
+                total_pembayaran: total_pembayaran
             }
+            fetch('modul/kasir/aksi.php?aksi=tambah&id_penjualan=' + id_penjualan, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === 'success') {
+                        resetAll();
+                        updateTable();
+                        totalPesanan();
+                        alert(result.message);
+                        console.log(result.message);
+                    } else {
+                        alert(result.message);
+                        console.log(result.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Error:', error);
+                    console.error('Error:', error);
+                });
         }
     }
 </script>

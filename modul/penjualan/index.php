@@ -8,7 +8,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>No</th>
+                                <th>Transaksi Ke</th>
                                 <th>Tanggal</th>
                                 <th>Nama Meja</th>
                                 <th>Total Diskon</th>
@@ -45,11 +45,10 @@
                                                      FROM penjualan a 
                                                      INNER JOIN meja b ON a.id_meja = b.id 
                                                      ORDER BY a.tanggal DESC LIMIT $offset, $per_halaman");
-                            $no = $offset + 1;
                             while ($data = $sql->fetch_assoc()) {
                             ?>
                                 <tr>
-                                    <td><?= $no++; ?></td>
+                                    <td><?= $data['id_penjualan']; ?></td>
                                     <td><?= $data['tanggal']; ?></td>
                                     <td><?= $data['nama_meja']; ?></td>
                                     <td>
@@ -80,34 +79,18 @@
                                     <td>
                                         <div class="d-flex justify-content-between">
                                             <span>Rp.</span>
-                                            <span>
-                                                <?php
-                                                if ($data['tunai'] == null) {
-                                                    echo "0";
-                                                } else {
-                                                    number_format($data['tunai'], 0);
-                                                }
-                                                ?>
-                                            </span>
+                                            <span><?= $data['tunai']; ?></span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-between">
                                             <span>Rp.</span>
-                                            <span>
-                                                <?php
-                                                if ($data['kembalian'] == 0) {
-                                                    echo "0";
-                                                } else {
-                                                    number_format($data['kembalian'], 0);
-                                                }
-                                                ?>
-                                            </span>
+                                            <span><?= $data['kembalian']; ?></span>
                                         </div>
                                     </td>
                                     <td><?= $data['catatan'] ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailPenjualan<?= $data['id_penjualan']; ?>">
+                                        <button type="button" class="btn btn-info btn-sm" title="Detail Penjualan" data-bs-toggle="modal" data-bs-target="#detailPenjualan<?= $data['id_penjualan']; ?>">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                                             </svg>
@@ -115,7 +98,12 @@
                                         <?php
                                         if ($data['status'] == 'Proses') {
                                         ?>
-                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#bayarPenjualan<?= $data['id_penjualan']; ?>">
+                                            <a href="main.php?module=tambah-pesanan&transaksi=<?= $data['id_penjualan']; ?>&meja=<?= $data['nama_meja']; ?>" type="button" class="btn btn-primary btn-sm" title="Tambah Pesanan">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5z" />
+                                                </svg>
+                                            </a>
+                                            <button type="button" class="btn btn-success btn-sm" title="Bayar Penjualan" data-bs-toggle="modal" data-bs-target="#bayarPenjualan<?= $data['id_penjualan']; ?>">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-coin" viewBox="0 0 16 16">
                                                     <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8m5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0" />
                                                     <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563h-.668zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1zm.432.746c.449.104.655.272.655.569 0 .339-.257.571-.709.614v-1.195z" />
@@ -126,17 +114,23 @@
                                         <?php
                                         }
                                         ?>
-                                        <button type="button" class="btn btn-warning btn-sm" onclick="cetakStruk(<?= $data['id_penjualan']; ?>)">
+                                        <button type="button" class="btn btn-warning btn-sm" title="Cetak Pesanan" data-bs-toggle="modal" data-bs-target="#cetakPesanan<?= $data['id_penjualan']; ?>">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
                                                 <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
                                                 <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
                                             </svg>
                                         </button>
-                                        <button type="button" class="btn btn-danger btn-sm" onclick="hapusPenjualan(<?= $data['id_penjualan']; ?>)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                                            </svg>
-                                        </button>
+                                        <?php
+                                        if ($data['status'] == 'Proses') {
+                                        ?>
+                                            <button type="button" class="btn btn-danger btn-sm" title="Hapus Penjualan" onclick="hapusPenjualan(<?= $data['id_penjualan']; ?>)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                                </svg>
+                                            </button>
+                                        <?php
+                                        }
+                                        ?>
                                         <div class="modal fade" id="detailPenjualan<?= $data['id_penjualan']; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
@@ -238,7 +232,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal fade" id="bayarPenjualan<?= $data['id_penjualan']; ?>">
+                                        <div class="modal fade" id="bayarPenjualan<?= $data['id_penjualan']; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -275,6 +269,37 @@
                                                                 </button>
                                                             </div>
                                                         </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="cetakPesanan<?= $data['id_penjualan']; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Cetak Pesanan</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="d-flex justify-content-center gap-2">
+                                                            <button class="btn btn-info" onclick="cetakPesanan('<?= $data['id_penjualan']; ?>')">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                                                                    <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
+                                                                    <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                                                                </svg>
+                                                                Cetak Makanan & Minuman
+                                                            </button>
+                                                            <button class="btn btn-success" onclick="cetakStruk(<?= $data['id_penjualan']; ?>)">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                                                                    <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
+                                                                    <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                                                                </svg>
+                                                                Cetak Struk
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -351,6 +376,11 @@
 
     function cetakStruk(id) {
         const printWindow = window.open(`modul/penjualan/cetak_struk.php?id=${id}`, '_blank');
+        printWindow.focus();
+    }
+
+    function cetakPesanan(id) {
+        const printWindow = window.open(`modul/penjualan/cetak_pesanan.php?id=${id}`, '_blank');
         printWindow.focus();
     }
 

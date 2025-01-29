@@ -8,7 +8,7 @@ if (isset($_GET['aksi'])) {
         $sql = "INSERT INTO meja (nama_meja, created_at, updated_at) VALUES ('$nama_meja', NOW(), NOW())";
         $query = mysqli_query($koneksi, $sql);
         if ($query) {
-            header('location:../../index.php?module=meja');
+            header('location:../../main.php?module=meja');
         } else {
             echo "Error: " . $sql . "<br>" . mysqli_error($koneksi);
         }
@@ -18,7 +18,7 @@ if (isset($_GET['aksi'])) {
         $sql = "UPDATE meja SET nama_meja='$nama_meja', updated_at=NOW() WHERE id='$id_meja'";
         $query = mysqli_query($koneksi, $sql);
         if ($query) {
-            header('location:../../index.php?module=meja');
+            header('location:../../main.php?module=meja');
         } else {
             echo "Error: " . $sql . "<br>" . mysqli_error($koneksi);
         }
@@ -27,7 +27,7 @@ if (isset($_GET['aksi'])) {
         $sql = "DELETE FROM meja WHERE id='$id_meja'";
         $query = mysqli_query($koneksi, $sql);
         if ($query) {
-            header('location:../../index.php?module=meja');
+            header('location:../../main.php?module=meja');
         } else {
             echo "Error: " . $sql . "<br>" . mysqli_error($koneksi);
         }

@@ -13,7 +13,9 @@ if (isset($_GET['module'])) {
         include('modul/meja/index.php');  
     } elseif ($module == 'identitas') {
         include('modul/identitas/index.php');
-    } 
+    } elseif ($module == 'tambah-pesanan') {
+        include ('modul/penjualan/tambah-pesanan.php');
+    }
     else {
         include('modul/home/index.php');
     }

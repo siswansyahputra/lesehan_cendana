@@ -20,7 +20,7 @@ $data_identitas = mysqli_fetch_array($query_identitas);
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg shadow-sm" style="background-color: #e3f2fd;">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.php?module=home">
+            <a class="navbar-brand" href="main.php?module=home">
                 <img src="icons/icon-192x192.png" alt="Logo" width="30" height="24"
                     class="d-inline-block align-text-top">
                 <?php echo $data_identitas['nama']; ?>
@@ -32,25 +32,25 @@ $data_identitas = mysqli_fetch_array($query_identitas);
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="index.php?module=home">Home</a>
+                        <a class="nav-link" aria-current="page" href="main.php?module=home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?module=identitas">
+                        <a class="nav-link" href="main.php?module=identitas">
                             Identitas
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?module=penjualan">Penjualan</a>
+                        <a class="nav-link" href="main.php?module=penjualan">Penjualan</a>
                     </li>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?module=menu">Menu</a>
+                        <a class="nav-link" href="main.php?module=menu">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?module=meja">Nomor Meja</a>
+                        <a class="nav-link" href="main.php?module=meja">Nomor Meja</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?module=kasir">Kasir</a>
+                        <a class="nav-link" href="main.php?module=kasir">Kasir</a>
                     </li>
                 </ul>
             </div>

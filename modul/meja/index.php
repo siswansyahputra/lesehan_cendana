@@ -16,7 +16,7 @@
                         <tbody>
                             <?php
                             // Jumlah data per halaman
-                            $per_halaman = 2;
+                            $per_halaman = 10;
 
                             // Hitung jumlah total data
                             $sql_total = "SELECT COUNT(*) FROM meja";

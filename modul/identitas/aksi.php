@@ -12,7 +12,7 @@ if(isset($_GET['aksi'])){
         if($query){
             // kirim pesan sukses dari session
             $_SESSION['pesan'] = 'Data identitas berhasil diubah';
-            header('location:../../index.php?module=identitas');
+            header('location:../../main.php?module=identitas');
         }
     }
 }

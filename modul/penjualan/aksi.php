@@ -15,5 +15,5 @@ if (isset($_GET['aksi'])) {
         $koneksi->query("update penjualan set tanggal=NOW(), tunai = '$tunai', kembalian = '$kembalian', catatan = '$catatan', status = 'Selesai' where id = '$id'");
     }
 }
-header("location:../../index.php?module=penjualan");
+header("location:../../main.php?module=penjualan");
 ?>

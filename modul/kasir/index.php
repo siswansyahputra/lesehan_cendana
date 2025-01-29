@@ -256,37 +256,6 @@
         alert('Pesanan berhasil ditambahkan!');
     }
 
-
-
-    // function tambahPesanan() {
-    //     const item = document.getElementById('item-list');
-    //     const id = item.options[item.selectedIndex].getAttribute('data-id');
-    //     const harga = item.options[item.selectedIndex].getAttribute('data-harga');
-    //     const diskon = item.options[item.selectedIndex].getAttribute('data-diskon');
-    //     const jumlah = document.getElementById('jumlah').value;
-    //     const total = (harga - diskon) * jumlah;
-    //     const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];
-    //     const index = pesanan.findIndex(p => p.id === id);
-    //     if (index !== -1) {
-    //         pesanan[index].jumlah += parseInt(jumlah);
-    //         pesanan[index].total += parseInt(total);
-    //     } else {
-    //         pesanan.push({
-    //             id: id,
-    //             item: item.options[item.selectedIndex].text,
-    //             harga: harga,
-    //             diskon: diskon,
-    //             jumlah: parseInt(jumlah),
-    //             total: parseInt(total)
-    //         });
-    //     }
-    //     localStorage.setItem('pesanan', JSON.stringify(pesanan));
-    //     document.getElementById('pilih_meja').disabled = false;
-    //     updateTable();
-    //     totalPesanan();
-    //     resetForm();
-    // }
-
     function updateTable() {
         const pesanan = JSON.parse(localStorage.getItem('pesanan')) || [];
         const table = document.querySelector('tbody');
@@ -377,7 +346,7 @@
                     total_diskon: total_diskon,
                     total_pembayaran: total_pembayaran
                 }
-                fetch('modul/kasir/aksi.php', {
+                fetch('modul/kasir/aksi.php?aksi=baru', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
