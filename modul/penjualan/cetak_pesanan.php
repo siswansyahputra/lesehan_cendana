@@ -35,11 +35,11 @@ if (isset($_GET['id'])) {
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 8px;
         }
 
         .container {
-            width: 80mm;
+            width: 40mm;
             margin: auto;
         }
 
@@ -72,58 +72,60 @@ if (isset($_GET['id'])) {
 <body onload="window.print()">
     <div class="container">
         <?php
-        if($statusMakanan == 1){
+        if ($statusMakanan == 1) {
         ?>
-        <p>Detail Makanan</p>
-        <hr>
-        <p>No. Transaksi: <?= $penjualan['id']; ?></p>
-        <p>Tanggal: <?= $penjualan['tanggal']; ?></p>
-        <p>Meja: <?= $penjualan['nama_meja']; ?></p>
-        <hr>
-        <table>
-            <thead>
-                <tr>
-                    <th>Menu</th>
-                    <th class="text-right">Qty</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $detailMakanan->fetch_assoc()) { ?>
+            <p>Detail Makanan</p>
+            <hr>
+            <p>No. Transaksi: <?= $penjualan['id']; ?></p>
+            <p>Tanggal: <?= $penjualan['tanggal']; ?></p>
+            <p>Meja: <?= $penjualan['nama_meja']; ?></p>
+            <hr>
+            <table>
+                <thead>
                     <tr>
-                        <td><?= $row['nama_menu']; ?></td>
-                        <td class="text-right"><?= $row['jumlah']; ?></td>
+                        <th>Menu</th>
+                        <th class="text-right">Qty</th>
                     </tr>
-                <?php } ?>
-            </tbody>
-        </table>
-        <hr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $detailMakanan->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?= $row['nama_menu']; ?></td>
+                            <td class="text-right"><?= $row['jumlah']; ?></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <hr>
         <?php
         }
-        if($statusMinuman == 1){
+        if ($statusMinuman == 1) {
         ?>
-        <p>Detail Minuman</p>
-        <hr>
-        <p>No. Transaksi: <?= $penjualan['id']; ?></p>
-        <p>Tanggal: <?= $penjualan['tanggal']; ?></p>
-        <p>Meja: <?= $penjualan['nama_meja']; ?></p>
-        <hr>
-        <table>
-            <thead>
-                <tr>
-                    <th>Menu</th>
-                    <th class="text-right">Qty</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $detailMinuman->fetch_assoc()) { ?>
+            <p>Detail Minuman</p>
+            <hr>
+            <p>No. Transaksi: <?= $penjualan['id']; ?></p>
+            <p>Tanggal: <?= $penjualan['tanggal']; ?></p>
+            <p>Meja: <?= $penjualan['nama_meja']; ?></p>
+            <hr>
+            <table>
+                <thead>
                     <tr>
-                        <td><?= $row['nama_menu']; ?></td>
-                        <td class="text-right"><?= $row['jumlah']; ?></td>
+                        <th>Menu</th>
+                        <th class="text-right">Qty</th>
                     </tr>
-                <?php } ?>
-            </tbody>
-        </table>
-        <hr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $detailMinuman->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?= $row['nama_menu']; ?></td>
+                            <td class="text-right"><?= $row['jumlah']; ?></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <p>
+                <hr>
+            </p>
         <?php
         }
         ?>

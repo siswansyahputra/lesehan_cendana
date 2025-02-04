@@ -22,11 +22,11 @@ if (isset($_GET['id'])) {
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 8px;
         }
 
         .container {
-            width: 80mm;
+            width: 40mm;
             margin: auto;
         }
 
@@ -101,20 +101,25 @@ if (isset($_GET['id'])) {
             <tr>
                 <td>Tunai</td>
                 <td class="text-right">
-                    Rp. 
-                    <?php if ($penjualan['tunai'] == 0) echo "0"; else echo number_format($penjualan['tunai'], 0); ?>
+                    Rp.
+                    <?php if ($penjualan['tunai'] == 0) echo "0";
+                    else echo number_format($penjualan['tunai'], 0); ?>
                 </td>
             </tr>
             <tr>
                 <td>Kembalian</td>
-                <td class="text-right">Rp. 
-                    <?php if ($penjualan['kembalian'] == 0) echo "0"; else echo number_format($penjualan['kembalian'], 0); ?>
+                <td class="text-right">Rp.
+                    <?php if ($penjualan['kembalian'] == 0) echo "0";
+                    else echo number_format($penjualan['kembalian'], 0); ?>
                 </td>
             </tr>
         </table>
         <hr>
         <p class="text-center">-- <?= $penjualan['status']; ?> --</p>
         <p class="text-center">Terima kasih atas kunjungan Anda!</p>
+        <p>
+            <hr>
+        </p>
     </div>
 </body>
 
