@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 30, 2025 at 01:31 AM
+-- Generation Time: Feb 05, 2025 at 04:22 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -70,15 +70,6 @@ CREATE TABLE `meja` (
   `updated_at` timestamp NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `meja`
---
-
-INSERT INTO `meja` (`id`, `nama_meja`, `created_at`, `updated_at`) VALUES
-(4, 'Meja 1', '2025-01-28 10:17:59', '2025-01-28 10:17:59'),
-(5, 'Meja 2', '2025-01-28 10:41:03', '2025-01-28 10:41:03'),
-(6, 'Meja 3', '2025-01-28 10:44:22', '2025-01-28 10:44:22');
-
 -- --------------------------------------------------------
 
 --
@@ -101,7 +92,7 @@ CREATE TABLE `menu` (
 --
 
 INSERT INTO `menu` (`id`, `nama_menu`, `harga`, `diskon`, `status`, `kategori`, `created_at`, `updated_at`) VALUES
-(1, 'Bebek Bakar Utuh', 85000, 0, '1', 'Makanan', NULL, NULL),
+(1, 'Bebek Bakar Utuh', 85000, 0, '1', 'Makanan', NULL, '2025-02-05 03:48:54'),
 (2, 'Bebek Geprek Utuh', 85000, 0, '1', 'Makanan', NULL, NULL),
 (3, 'Bebek Bakar', 37000, 0, '1', 'Makanan', NULL, NULL),
 (4, 'Bebek Penyet', 35000, 0, '1', 'Makanan', NULL, NULL),
@@ -272,7 +263,7 @@ ALTER TABLE `identitas`
 -- AUTO_INCREMENT for table `meja`
 --
 ALTER TABLE `meja`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `menu`

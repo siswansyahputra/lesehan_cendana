@@ -31,6 +31,7 @@ if (isset($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
     <title>Cetak Struk</title>
     <style>
         body {
@@ -76,9 +77,8 @@ if (isset($_GET['id'])) {
         ?>
             <p>Detail Makanan</p>
             <hr>
-            <p>No. Transaksi: <?= $penjualan['id']; ?></p>
+            <p>No. Transaksi: <?= $penjualan['id']; ?> | <?= $penjualan['nama_meja']; ?></p>
             <p>Tanggal: <?= $penjualan['tanggal']; ?></p>
-            <p>Meja: <?= $penjualan['nama_meja']; ?></p>
             <hr>
             <table>
                 <thead>
@@ -96,16 +96,17 @@ if (isset($_GET['id'])) {
                     <?php } ?>
                 </tbody>
             </table>
-            <hr>
+            <p>
+                <hr>
+            </p>
         <?php
         }
         if ($statusMinuman == 1) {
         ?>
             <p>Detail Minuman</p>
             <hr>
-            <p>No. Transaksi: <?= $penjualan['id']; ?></p>
+            <p>No. Transaksi: <?= $penjualan['id']; ?> | <?= $penjualan['nama_meja']; ?></p>
             <p>Tanggal: <?= $penjualan['tanggal']; ?></p>
-            <p>Meja: <?= $penjualan['nama_meja']; ?></p>
             <hr>
             <table>
                 <thead>

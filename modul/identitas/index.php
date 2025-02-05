@@ -1,29 +1,28 @@
 <div class="row justify-content-center">
-    <div class="col-6">
+    <div class="col-12 col-md-8 col-lg-6">
         <div class="card mt-3 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title">Identitas</h5>
                 <hr>
-                <?php
-                if(isset($_SESSION['pesan'])) {
-                ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert"><?= $_SESSION['pesan']; ?><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
-                <?php
-                    unset($_SESSION['pesan']);
-                }
-                ?>
+                <?php if (isset($_SESSION['pesan'])): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= $_SESSION['pesan']; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <?php unset($_SESSION['pesan']); ?>
+                <?php endif; ?>
                 <form action="modul/identitas/aksi.php?aksi=update&id=<?= $data_identitas['id']; ?>" method="post">
                     <div class="mb-3">
                         <label for="nama" class="form-label">Nama</label>
-                        <input type="text" class="form-control" id="nama" name="nama" value="<?= $data_identitas['nama']; ?>" require>
+                        <input type="text" class="form-control" id="nama" name="nama" value="<?= $data_identitas['nama']; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label for="alamat" class="form-label">Alamat</label>
-                        <input type="text" class="form-control" id="alamat" name="alamat" value="<?= $data_identitas['alamat']; ?>" require>
+                        <input type="text" class="form-control" id="alamat" name="alamat" value="<?= $data_identitas['alamat']; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label for="telepon" class="form-label">Telepon</label>
-                        <input type="text" class="form-control" id="telepon" name="telepon" value="<?= $data_identitas['telepon']; ?>" require>
+                        <input type="text" class="form-control" id="telepon" name="telepon" value="<?= $data_identitas['telepon']; ?>" required>
                     </div>
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">

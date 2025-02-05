@@ -1,110 +1,98 @@
-<div class="row mt-3">
-    <div class="col-8">
-        <div class="card" style="height: 70%;">
-            <div class="card-body">
-                <h5 class="card-title">Detail Pesanan</h5>
-                <hr>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Menu</th>
-                                <th>Harga (Rp.)</th>
-                                <th>Diskon (Rp.)</th>
-                                <th>Qty</th>
-                                <th>Total (Rp.)</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mt-3">
-            <div class="card-body">
-                <h5 class="card-title">Proses Pesanan</h5>
-                <hr>
-                <div class="row">
-                    <div class="col">
-                        <label for="total_diskon" class="form-label">Total Diskon (Rp.)</label>
-                        <input type="text" class="form-control bg-light" id="total_diskon" name="total_diskon" readonly>
+<div class="container-fluid">
+    <div class="row mt-3">
+        <div class="col-lg-4 col-md-5 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Atur Pesanan</h5>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="item" class="form-label">Item</label>
+                        <input type="text" id="item" class="form-control" name="item" required list="item-list" autocomplete="off" oninput="pilihItem()">
+                        <datalist id="item-list"></datalist>
                     </div>
-                    <div class="col">
-                        <label for="total_pembayaran" class="form-label">Total Pembayaran (Rp.)</label>
-                        <input type="text" class="form-control bg-light" id="total_pembayaran" name="total_pembayaran" readonly>
+                    <div class="mb-3">
+                        <label for="harga" class="form-label">Harga</label>
+                        <input type="text" class="form-control" id="harga" name="harga" readonly>
                     </div>
-                    <div class="col">
-                        <label for="pilih_meja" class="form-label">Pilih Meja</label>
-                        <select name="pilih_meja" id="pilih_meja" class="form-select" onchange="pilihMeja()" disabled required>
-                            <option value="">-- Pilih Meja --</option>
-                            <?php
-                            $query = mysqli_query($koneksi, "SELECT * FROM meja");
-                            while ($data = mysqli_fetch_array($query)) {
-                            ?>
-                                <option
-                                    value="<?= $data['id']; ?>"
-                                    data-id="<?= $data['id']; ?>"
-                                    data-nama="<?= $data['nama_meja']; ?>">
-                                    <?= $data['nama_meja']; ?>
-                                </option>
-                            <?php
-                            }
-                            ?>
-                        </select>
+                    <div class="mb-3">
+                        <label for="diskon" class="form-label">Diskon</label>
+                        <input type="text" class="form-control" id="diskon" name="diskon" readonly>
                     </div>
-                    <div class="col align-self-end">
-                        <button type="reset" class="btn btn-secondary w-100 mb-1" onclick="resetAll()">Reset</button>
-                        <button type="submit" name="simpan" id="simpan" class="btn btn-primary w-100" onclick="simpanPesanan()">Simpan</button>
+                    <div class="mb-3">
+                        <label for="jumlah" class="form-label">Jumlah</label>
+                        <input type="number" class="form-control" id="jumlah" name="jumlah" oninput="hitungTotal()" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="total" class="form-label">Total</label>
+                        <input type="text" class="form-control" id="total" name="total" readonly>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="reset" class="btn btn-secondary w-50" onclick="resetItem()">Reset</button>
+                        <button type="button" id="tambah" class="btn btn-primary w-50" disabled onclick="tambahPesanan()">Tambah</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Atur Pesanan</h5>
-                <hr>
-                <div class="mb-3">
-                    <label for="item" class="form-label">Item</label>
-                    <input type="text" id="item" class="form-control" name="item" required list="item-list" autocomplete="off" oninput="pilihItem()">
-                    <datalist id="item-list">
-                        <!-- Data menu akan dimuat di sini -->
-                    </datalist>
+        <div class="col-lg-8 col-md-7 col-sm-12 mt-3">
+            <div class="card mb-3" style="height: 300px;">
+                <div class="card-body">
+                    <h5 class="card-title">Detail Pesanan</h5>
+                    <hr>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Menu</th>
+                                    <th>Harga (Rp.)</th>
+                                    <th>Diskon (Rp.)</th>
+                                    <th>Qty</th>
+                                    <th>Total (Rp.)</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            </div>
 
-
-                <div class="mb-3">
-                    <label for="harga" class="form-label">Harga</label>
-                    <input type="text" class="form-control" id="harga" name="harga" readonly>
-                </div>
-                <div class="mb-3">
-                    <label for="diskon" class="form-label">Diskon</label>
-                    <input type="text" class="form-control" id="diskon" name="diskon" readonly>
-                </div>
-                <div class="mb-3">
-                    <label for="jumlah" class="form-label">Jumlah</label>
-                    <input type="number" class="form-control" id="jumlah" name="jumlah" oninput="hitungTotal()" required>
-                </div>
-                <div class="mb-3">
-                    <label for="total" class="form-label">Total</label>
-                    <input type="text" class="form-control" id="total" name="total" readonly>
-                </div>
-                <div class="d-flex gap-2">
-                    <button type="reset" class="btn btn-secondary w-100" onclick="resetItem()">Reset</button>
-                    <button type="button" id="tambah" class="btn btn-primary w-100" disabled onclick="tambahPesanan()">Tambah</button>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Proses Pesanan</h5>
+                    <hr>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="total_diskon" class="form-label">Total Diskon (Rp.)</label>
+                            <input type="text" class="form-control bg-light" id="total_diskon" name="total_diskon" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="total_pembayaran" class="form-label">Total Pembayaran (Rp.)</label>
+                            <input type="text" class="form-control bg-light" id="total_pembayaran" name="total_pembayaran" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="pilih_meja" class="form-label">Pilih Meja</label>
+                            <input type="text" id="pilih_meja" class="form-control" name="pilih_meja" required list="meja_list" autocomplete="off" oninput="pilihMeja()">
+                            <datalist id="meja_list">
+                                <!-- Data menu akan dimuat di sini -->
+                            </datalist>
+                        </div>
+                        <div class="col-12 d-flex justify-content-between">
+                            <button type="reset" class="btn btn-secondary" onclick="resetAll()">Reset</button>
+                            <button type="submit" name="simpan" id="simpan" class="btn btn-primary" onclick="simpanPesanan()">Simpan</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         fetchMenu();
+        fetchMeja();
         updateTable();
         totalPesanan();
         // jika ada data pesanan di local storage
@@ -112,6 +100,23 @@
             document.getElementById('pilih_meja').disabled = false;
         }
     })
+
+    function fetchMeja() {
+        fetch('modul/meja/api.php')
+            .then(response => response.json())
+            .then(data => {
+                const mejaList = document.getElementById('meja_list');
+                mejaList.innerHTML = ''; // Reset list
+                data.data.forEach(meja => {
+                    const option = document.createElement('option');
+                    option.value = meja.nama_meja;
+                    option.setAttribute('data-id', meja.id);
+                    option.setAttribute('data-nama', meja.nama_meja);
+                    mejaList.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching meja:', error));
+    }
 
     function fetchMenu() {
         fetch('modul/menu/api.php')
@@ -309,12 +314,25 @@
     }
 
     function pilihMeja() {
-        const meja = document.getElementById('pilih_meja');
-        const id = meja.options[meja.selectedIndex].getAttribute('data-id');
-        const nama = meja.options[meja.selectedIndex].getAttribute('data-nama');
-        localStorage.setItem('id_meja', id);
-        localStorage.setItem('nama_meja', nama);
+        const mejaInput = document.getElementById('pilih_meja');
+        const mejaList = document.getElementById('meja_list').options;
+
+        let selectedId = null;
+        let selectedNama = mejaInput.value;
+
+        for (let option of mejaList) {
+            if (option.value === selectedNama) {
+                selectedId = option.getAttribute('data-id');
+                break;
+            }
+        }
+
+        if (selectedId) {
+            localStorage.setItem('id_meja', selectedId);
+            localStorage.setItem('nama_meja', selectedNama);
+        }
     }
+
 
     function resetAll() {
         localStorage.clear();

@@ -1,6 +1,53 @@
 <div class="row mt-3">
-    <div class="col-8">
-        <div class="card" style="height: 70%;">
+    <!-- Bagian Tambah Pesanan -->
+    <div class="col-lg-4 col-md-12 mt-3 mt-lg-0">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tambah Pesanan</h5>
+                <div class="d-flex flex-wrap justify-content-between">
+                    <div>
+                        <span>Transaksi: </span>
+                        <span id="id_transaksi" class="fw-bold"><?= $_GET['transaksi']; ?></span>
+                    </div>
+                    <div>
+                        <span>No. Meja: </span>
+                        <span class="fw-bold"><?= $_GET['meja']; ?></span>
+                    </div>
+                </div>
+                <hr>
+                <div class="mb-3">
+                    <label for="item" class="form-label">Item</label>
+                    <input type="text" id="item" class="form-control" name="item" required list="item-list" autocomplete="off" oninput="pilihItem()">
+                    <datalist id="item-list">
+                        <!-- Data menu akan dimuat di sini -->
+                    </datalist>
+                </div>
+                <div class="mb-3">
+                    <label for="harga" class="form-label">Harga</label>
+                    <input type="text" class="form-control" id="harga" name="harga" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="diskon" class="form-label">Diskon</label>
+                    <input type="text" class="form-control" id="diskon" name="diskon" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="jumlah" class="form-label">Jumlah</label>
+                    <input type="number" class="form-control" id="jumlah" name="jumlah" oninput="hitungTotal()" required>
+                </div>
+                <div class="mb-3">
+                    <label for="total" class="form-label">Total</label>
+                    <input type="text" class="form-control" id="total" name="total" readonly>
+                </div>
+                <div class="d-flex flex-md-row flex-column gap-2">
+                    <button type="reset" class="btn btn-secondary w-100" onclick="resetItem()">Reset</button>
+                    <button type="button" id="tambah" class="btn btn-primary w-100" disabled onclick="tambahPesanan()">Tambah</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bagian Detail Pesanan -->
+    <div class="col-lg-8 col-md-12 mt-3 mt-lg-0">
+        <div class="card mb-3" style="height: 300px;">
             <div class="card-body">
                 <h5 class="card-title">Detail Pesanan</h5>
                 <hr>
@@ -24,75 +71,29 @@
             </div>
         </div>
 
-        <div class="card mt-3">
+        <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Proses Pesanan</h5>
                 <hr>
                 <div class="row">
-                    <div class="col">
+                    <div class="col-md-6">
                         <label for="total_diskon" class="form-label">Total Diskon (Rp.)</label>
                         <input type="text" class="form-control bg-light" id="total_diskon" name="total_diskon" readonly>
                     </div>
-                    <div class="col">
+                    <div class="col-md-6">
                         <label for="total_pembayaran" class="form-label">Total Pembayaran (Rp.)</label>
                         <input type="text" class="form-control bg-light" id="total_pembayaran" name="total_pembayaran" readonly>
                     </div>
-                    <div class="col align-self-end">
-                        <button type="reset" class="btn btn-secondary w-100 mb-1" onclick="resetAll()">Reset</button>
-                        <button type="submit" name="simpan" id="simpan" class="btn btn-primary w-100" onclick="simpanPesanan()">Simpan</button>
-                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Tambah Pesanan</h5>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <span>Transaksi : </span>
-                        <span id="id_transaksi" class="fw-bold"><?= $_GET['transaksi']; ?></span>
-                    </div>
-                    <div>
-                        <span>No. Meja : </span>
-                        <span class="fw-bold"><?= $_GET['meja']; ?></span>
-                    </div>
-                </div>
-                <hr>
-                <div class="mb-3">
-                    <label for="item" class="form-label">Item</label>
-                    <input type="text" id="item" class="form-control" name="item" required list="item-list" autocomplete="off" oninput="pilihItem()">
-                    <datalist id="item-list">
-                        <!-- Data menu akan dimuat di sini -->
-                    </datalist>
-                </div>
-
-
-                <div class="mb-3">
-                    <label for="harga" class="form-label">Harga</label>
-                    <input type="text" class="form-control" id="harga" name="harga" readonly>
-                </div>
-                <div class="mb-3">
-                    <label for="diskon" class="form-label">Diskon</label>
-                    <input type="text" class="form-control" id="diskon" name="diskon" readonly>
-                </div>
-                <div class="mb-3">
-                    <label for="jumlah" class="form-label">Jumlah</label>
-                    <input type="number" class="form-control" id="jumlah" name="jumlah" oninput="hitungTotal()" required>
-                </div>
-                <div class="mb-3">
-                    <label for="total" class="form-label">Total</label>
-                    <input type="text" class="form-control" id="total" name="total" readonly>
-                </div>
-                <div class="d-flex gap-2">
-                    <button type="reset" class="btn btn-secondary w-100" onclick="resetItem()">Reset</button>
-                    <button type="button" id="tambah" class="btn btn-primary w-100" disabled onclick="tambahPesanan()">Tambah</button>
+                <div class="d-flex flex-md-row flex-column gap-2 mt-3">
+                    <button type="reset" class="btn btn-secondary w-100" onclick="resetAll()">Reset</button>
+                    <button type="submit" name="simpan" id="simpan" class="btn btn-primary w-100" onclick="simpanPesanan()">Simpan</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         fetchMenu();
