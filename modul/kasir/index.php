@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="col-lg-8 col-md-7 col-sm-12 mt-3">
-            <div class="card mb-3" style="height: 300px;">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Detail Pesanan</h5>
                     <hr>
